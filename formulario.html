@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librería Sparrow - Formulario de Compra</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="icon" href="img/logo_tienda_libros.webp" type="image/png" />
+  </head>
+  <body class="formulario-bg">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-rojo-sparrow">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html"
+          <img
+            src="img/logo_tienda_libros.webp"
+            alt="Logo"
+            width="40"
+            class="me-2"
+          />
+          Librería Sparrow
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="index.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="diagramas.html">Diagramas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="admin.html">Admin</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="container my-5">
+      <h2 class="text-center mb-4 text-dark fs-2 fw-bold">
+        Formulario de Compra
+      </h2>
+
+      <form
+        id="form-compra"
+        class="card p-4 shadow bg-light text-dark border border-danger"
+      >
+        <!-- Datos del comprador -->
+        <h5 class="text-danger mb-3">📋 Datos del Comprador</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" id="nombre" required />
+          </div>
+          <div class="col-md-6">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="direccion" required />
+          </div>
+          <div class="col-md-6">
+            <label for="rut" class="form-label">RUT</label>
+            <input
+              type="text"
+              class="form-control"
+              id="rut"
+              placeholder="12.345.678-9"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="email" required />
+          </div>
+          <div class="col-md-6">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="telefono"
+              placeholder="+569..."
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="pais-envio" class="form-label">País de envío</label>
+            <select class="form-select" id="pais-envio" required>
+              <option value="">-- Selecciona un país --</option>
+              <option value="CLP">Chile</option>
+              <option value="UF">Chile (UF)</option>
+              <option value="UTM">Chile (UTM)</option>
+              <option value="EURO">España</option>
+              <option value="EURO">Alemania</option>
+              <option value="EURO">Francia</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Libros y cantidad -->
+        <hr class="my-4 border-danger" />
+        <h5 class="text-danger mb-3">📚 Selección del Libro</h5>
+
+        <div class="mb-3">
+          <label for="libro" class="form-label">Libro</label>
+          <select class="form-select" id="libro" required>
+            <option value="">-- Selecciona un libro --</option>
+            <!-- Las opciones se cargarán dinámicamente desde la API -->
+          </select>
+        </div>
+
+        <!-- Detalles del libro -->
+        <div
+          id="detalles-libro"
+          class="mt-4 p-3 bg-white border rounded shadow"
+          style="display: none"
+        >
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <img
+                id="detalle-imagen"
+                src=""
+                alt="Portada del libro"
+                class="img-fluid rounded shadow"
+              />
+            </div>
+            <div class="col-md-8">
+              <p><strong>Título:</strong> <span id="detalle-titulo"></span></p>
+              <p><strong>Autor:</strong> <span id="detalle-autor"></span></p>
+              <p>
+                <strong>Descripción:</strong>
+                <span id="detalle-descripcion"></span>
+              </p>
+              <p>
+                <strong>Categoría:</strong> <span id="detalle-categoria"></span>
+              </p>
+              <p>
+                <strong>Precio:</strong>
+                <span id="detalle-precio" class="text-warning fw-bold"></span>
+              </p>
+              <p>
+                <strong>Stock disponible:</strong>
+                <span id="detalle-stock"></span>
+              </p>
+              <p><strong>Estado:</strong> <span id="detalle-estado"></span></p>
+              <p>
+                <strong>Proveedor:</strong> <span id="detalle-proveedor"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cantidad -->
+        <div class="mb-3 mt-4">
+          <label for="cantidad" class="form-label">Cantidad</label>
+          <input
+            type="number"
+            class="form-control"
+            id="cantidad"
+            min="1"
+            max="1000"
+            value="1"
+            required
+          />
+        </div>
+
+        <!-- Descuento -->
+        <hr class="my-4 border-danger" />
+        <h5 class="text-danger mb-3">💳 Descuento y Pago</h5>
+        <div class="mb-3">
+          <label for="descuento" class="form-label">Código de descuento</label>
+          <input
+            type="text"
+            class="form-control"
+            id="descuento"
+            placeholder="Ej: FANTASIA10"
+          />
+          <button
+            type="button"
+            class="btn btn-outline-danger mt-2"
+            id="aplicar-descuento"
+          >
+            Aplicar Descuento
+          </button>
+          <p id="descuento-aplicado" class="text-success fw-bold mt-2"></p>
+        </div>
+
+        <div class="mb-3">
+          <label for="pago" class="form-label">Método de pago</label>
+          <select class="form-select" id="pago" required>
+            <option value="">-- Selecciona un método --</option>
+            <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+          </select>
+        </div>
+
+        <!-- Envío -->
+        <hr class="my-4 border-danger" />
+        <h5 class="text-danger mb-3">🚚 Envío</h5>
+        <div class="mb-3">
+          <div class="form-check">
+            <input
+              type="radio"
+              class="form-check-input"
+              name="envio"
+              value="Exprés"
+              id="envio_expres"
+              required
+            />
+            <label class="form-check-label" for="envio_expres"
+              >Envío Express ($10.000)</label
+            >
+          </div>
+          <div class="form-check">
+            <input
+              type="radio"
+              class="form-check-input"
+              name="envio"
+              value="Estándar"
+              id="envio_estandar"
+            />
+            <label class="form-check-label" for="envio_estandar"
+              >Envío Estándar ($5.000)</label
+            >
+          </div>
+          <p id="info-envio" class="mt-2 text-info fw-bold"></p>
+        </div>
+
+        <!-- Extras -->
+        <hr class="my-4 border-danger" />
+        <h5 class="text-danger mb-3">🎂 Edad y Seguridad</h5>
+        <div class="mb-3">
+          <label for="fecha_nacimiento" class="form-label"
+            >Fecha de nacimiento</label
+          >
+          <input
+            type="date"
+            class="form-control"
+            id="fecha_nacimiento"
+            required
+          />
+          <button
+            type="button"
+            class="btn btn-outline-danger mt-2"
+            id="calcular-edad"
+          >
+            Calcular Edad
+          </button>
+          <p id="resultado-edad"></p>
+        </div>
+
+        <div class="mb-3">
+          <button type="button" class="btn btn-warning" id="encriptar-nombre">
+            🔐 Encriptar Nombre
+          </button>
+          <p id="nombre-encriptado" class="mt-2"></p>
+        </div>
+
+        <!-- Total -->
+        <div class="my-4 text-center">
+          <h4 id="precio-final" class="text-white bg-danger p-3 rounded">
+            Total a pagar: $0 CLP
+          </h4>
+          <p id="precio-convertido" class="text-secondary mt-2"></p>
+        </div>
+
+        <!-- Enviar -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-danger btn-lg">
+            🛒 Realizar Compra
+          </button>
+        </div>
+      </form>
+
+      <!-- Valores API -->
+      <section
+        class="mt-5 p-4 bg-light text-dark border border-danger rounded shadow"
+      >
+        <h3 class="text-center mb-3">
+          💸 ¿Quieres convertir monedas tú mismo? ¡Hazlo aquí! 💸
+        </h3>
+        <h4 class="mb-3 text-danger">Valores del Día (API mindicador.cl)</h4>
+        <ul class="mb-3">
+          <li>UF: <span id="valor-uf">Cargando...</span></li>
+          <li>UTM: <span id="valor-utm">Cargando...</span></li>
+          <li>EURO: <span id="valor-euro">Cargando...</span></li>
+        </ul>
+
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <label for="convertir-monto" class="form-label"
+              >Convertir total a otra moneda:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="convertir-monto"
+              placeholder="Monto en CLP"
+            />
+          </div>
+          <div class="col-md-4 mb-2">
+            <label for="convertir-moneda" class="form-label">Moneda</label>
+            <select class="form-select" id="convertir-moneda">
+              <option value="uf">UF</option>
+              <option value="utm">UTM</option>
+              <option value="euro">EURO</option>
+            </select>
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button id="btn-convertir" class="btn btn-secondary w-100">
+              Convertir
+            </button>
+          </div>
+        </div>
+
+        <p id="resultado-conversion" class="mt-3 fw-bold"></p>
+      </section>
+
+      <!-- Resumen -->
+      <section
+        id="resumen"
+        class="mt-5 p-4 bg-success bg-opacity-10 border-start border-success border-5 rounded"
+        style="display: none"
+      >
+        <h4 class="text-success">Resumen de la Compra</h4>
+        <ul id="resumen-lista" class="list-unstyled mt-2"></ul>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-rojo-sparrow text-white text-center py-3">
+      <div class="container-fluid">
+        <p class="mb-1">&copy; 2025 Librería Sparrow</p>
+        <a href="terminos.html" class="text-white text-decoration-underline"
+          >Términos y condiciones</a
+        >
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>

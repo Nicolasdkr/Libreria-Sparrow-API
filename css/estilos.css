@@ -1,0 +1,58 @@
+body {
+  background-color: #f8f9fa;
+}
+
+/* Estilo para navbar rojo oscuro */
+.navbar-red {
+  background-color: #a11212 !important;
+}
+
+/* Carrusel con altura controlada */
+.carousel-item img {
+  height: 500px;
+  object-fit: cover;
+}
+
+/* Estilo para secciones */
+.section-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+/* Imagen en sección "Quiénes somos" */
+#img-nosotros {
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+}
+
+/* Imagen del libro seleccionado (en formulario) */
+#imagen-libro {
+  display: flex;
+  height: 400px;
+  width: 400px;
+}
+
+#mapa iframe {
+  width: 100%;
+  height: 350px;
+  border: 0;
+  border-radius: 10px;
+}
+
+.navbar-red {
+  background-color: #7e0a0a;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bg-rojo-sparrow {
+  background-color: #7e0a0a;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+}
+
+#quienes-somos h3 {
+  font-weight: 700;
+  font-size: 2.5rem;
+}

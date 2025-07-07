@@ -1,0 +1,8 @@
+"""Con este archivo y la ultima linea de codigo,  podes instalar todo con solo escribir la ultima linea en el cmd, solo en VSC"""
+
+Flask
+pymongo
+dnspython
+flask-cors
+
+#pip install -r requirements.txt
