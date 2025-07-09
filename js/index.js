@@ -38,6 +38,7 @@ function configurarEventos() {
   document
     .getElementById("encriptar-nombre")
     .addEventListener("click", encriptarNombre);
+  document.getElementById("mensaje-confirmacion").style.display = "block";
 }
 
 // 📚 Cargar libros desde la API
@@ -186,8 +187,17 @@ async function realizarCompra(e) {
   const email = document.getElementById("email").value.trim();
   const telefono = document.getElementById("telefono").value.trim();
   const direccion = document.getElementById("direccion").value.trim();
+  const pais = document.getElementById("pais-envio").value;
+  const fechaNacimiento = document.getElementById("fecha_nacimiento").value;
 
-  if (!libro || !envio || !metodoPago || isNaN(cantidad)) {
+  if (
+    !libro ||
+    !envio ||
+    !metodoPago ||
+    isNaN(cantidad) ||
+    !pais ||
+    !fechaNacimiento
+  ) {
     alert("Por favor completa todos los campos.");
     return;
   }
@@ -207,12 +217,28 @@ async function realizarCompra(e) {
     return;
   }
 
-  let total = libro.precio * cantidad;
-  if (envio === "Exprés") total += 10000;
-  else if (envio === "Estándar") total += 5000;
-  if (descuento === "FANTASIA10") total *= 0.9;
+  const costoEnvio = envio === "Exprés" ? 10000 : 5000;
+  const totalLibros = libro.precio * cantidad;
+  const descuentoAplicado = descuento === "FANTASIA10";
+  const totalFinal = Math.round(
+    (totalLibros + costoEnvio) * (descuentoAplicado ? 0.9 : 1)
+  );
 
-  const cliente = { nombre, rut, email, telefono, pedido_activo: true };
+  const hoy = new Date();
+  const fechaEntrega = new Date();
+  fechaEntrega.setDate(hoy.getDate() + (envio === "Exprés" ? 7 : 21));
+
+  const cliente = {
+    nombre,
+    nombre_encriptado: btoa(nombre),
+    rut,
+    correo: email,
+    telefono,
+    direccion,
+    fecha_nacimiento: new Date(fechaNacimiento),
+    fecha_registro: new Date(),
+    pedido_activo: true,
+  };
   let cliente_id = null;
 
   try {
@@ -230,56 +256,59 @@ async function realizarCompra(e) {
   const pedido = {
     cliente_id,
     nombre,
+    nombre_encriptado: btoa(nombre),
     rut,
-    email,
+    correo: email,
     telefono,
     direccion,
+    pais,
+    moneda: pais,
+    fecha_nacimiento: new Date(fechaNacimiento),
     productos: [
       {
         producto_id: libro._id,
         titulo: libro.titulo,
         cantidad,
         precio_unitario: libro.precio,
+        total_libros: totalLibros,
+        descuento_aplicado: descuentoAplicado,
+        costo_envio: costoEnvio,
       },
     ],
-    total_final: Math.round(total),
+    total_final: totalFinal,
     estado_envio: "Pendiente",
     metodo_pago: metodoPago,
-    fecha_pedido: new Date().toISOString(),
+    tipo_envio: envio,
+    fecha_pedido: hoy.toISOString(),
+    fecha_entrega: fechaEntrega.toISOString(),
   };
 
   try {
-    await fetch("http://localhost:5000/api/pedidos", {
+    const resPedido = await fetch("http://localhost:5000/api/pedidos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(pedido),
     });
 
-    mostrarResumen(pedido);
+    if (!resPedido.ok) {
+      const errorText = await resPedido.text();
+      console.error("Error del servidor:", errorText);
+      alert("Hubo un problema al registrar tu pedido.");
+      return;
+    }
+
+    const dataPedido = await resPedido.json();
+    console.log("Pedido guardado correctamente:", dataPedido);
+
+    // ✅ Se elimina mostrarResumen(pedido);
+
     document.getElementById("form-compra").reset();
     document.getElementById("detalles-libro").style.display = "none";
     actualizarPrecioTotal();
   } catch (error) {
-    console.error("Error al enviar el pedido:", error);
-    alert("Hubo un problema al registrar tu pedido.");
+    console.error("Error de conexión o formato:", error);
+    alert("No se pudo conectar con el servidor.");
   }
-}
-
-// 📋 Mostrar resumen
-function mostrarResumen(pedido) {
-  const resumen = document.getElementById("resumen");
-  const lista = document.getElementById("resumen-lista");
-
-  lista.innerHTML = `
-    <li><strong>Cliente:</strong> ${pedido.nombre}</li>
-    <li><strong>Libro:</strong> ${pedido.productos[0].titulo}</li>
-    <li><strong>Cantidad:</strong> ${pedido.productos[0].cantidad}</li>
-    <li><strong>Total:</strong> $${pedido.total_final.toLocaleString()}</li>
-    <li><strong>Pago:</strong> ${pedido.metodo_pago}</li>
-    <li><strong>Estado:</strong> ${pedido.estado_envio}</li>
-  `;
-
-  resumen.style.display = "block";
 }
 
 //Validaciones

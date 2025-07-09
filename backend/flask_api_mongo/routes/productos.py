@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, request
 from bson import ObjectId
 from db.connection import db
+from bson.objectid import ObjectId, InvalidId
 
 productos_bp = Blueprint('productos', __name__)
 productos = db.productos
@@ -9,12 +10,36 @@ productos = db.productos
 # Listar todos los productos
 @productos_bp.route('/', methods=['GET'])
 def listar_productos():
-    resultado = []
-    for producto in productos.find():
-        producto['_id'] = str(producto['_id'])
-        producto['proveedor_id'] = str(producto['proveedor_id']) if 'proveedor_id' in producto else None
-        resultado.append(producto)
-    return jsonify(resultado)
+    productos = []
+    coleccion_productos = db.productos
+    coleccion_proveedores = db.proveedores
+
+    for producto in coleccion_productos.find():
+        proveedor_id = producto.get("proveedor_id")
+        proveedor_nombre = "Sin proveedor"
+
+        if proveedor_id:
+            try:
+                proveedor = coleccion_proveedores.find_one({"_id": ObjectId(proveedor_id)})
+                if proveedor:
+                    proveedor_nombre = proveedor.get("nombre", "Desconocido")
+            except (InvalidId, TypeError):
+                proveedor_nombre = "ID inválido"
+
+        productos.append({
+            "_id": str(producto["_id"]),
+            "titulo": producto["titulo"],
+            "autor": producto["autor"],
+            "descripcion": producto["descripcion"],
+            "categoria": producto["categoria"],
+            "precio": producto["precio"],
+            "stock": producto["stock"],
+            "estado": producto["estado"],
+            "imagen": producto.get("imagen", ""),
+            "proveedor_nombre": proveedor_nombre  # ← este campo lo mostrará el frontend
+        })
+
+    return jsonify(productos)
 
 # Crear un nuevo producto
 @productos_bp.route('/', methods=['POST'])

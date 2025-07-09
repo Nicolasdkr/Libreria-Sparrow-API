@@ -20,11 +20,15 @@ def listar_pedidos():
     return jsonify(resultado)
 
 # Crear un nuevo pedido
-@pedidos_bp.route('/', methods=['POST'])
+@pedidos_bp.route('', methods=['POST', 'OPTIONS'])  # ✅ sin barra final
 def crear_pedido():
+    if request.method == 'OPTIONS':
+        return '', 200
+
     data = request.json
     pedidos.insert_one(data)
     return jsonify({"mensaje": "Pedido registrado correctamente"})
+
 
 # Actualizar un pedido
 @pedidos_bp.route('/<id>', methods=['PUT'])

@@ -25,11 +25,14 @@ def obtener_clientes_activos():
     return jsonify(resultado)
 
 # Agregar un nuevo cliente
-@clientes_bp.route('/', methods=['POST'])
+@clientes_bp.route('', methods=['POST', 'OPTIONS'])
 def agregar_cliente():
+    if request.method == 'OPTIONS':
+        return '', 200
     data = request.json
     clientes.insert_one(data)
     return jsonify({"mensaje": "Cliente agregado correctamente"})
+
 
 # Actualizar un cliente existente
 @clientes_bp.route('/<id>', methods=['PUT'])

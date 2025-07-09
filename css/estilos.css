@@ -56,3 +56,18 @@ body {
   font-weight: 700;
   font-size: 2.5rem;
 }
+
+.img-libro {
+  height: 480px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.btn-catalogo {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-catalogo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}

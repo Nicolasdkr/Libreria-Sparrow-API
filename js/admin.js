@@ -124,7 +124,7 @@ async function cargarLibros() {
         <td>$${libro.precio.toLocaleString()}</td>
         <td>${libro.stock}</td>
         <td>${libro.estado}</td>
-        <td>${libro.proveedor_id || "-"}</td>
+        <td>${libro.proveedor_nombre || "-"}</td>
         <td class="d-flex gap-2 justify-content-center">
           <button class="btn btn-sm btn-warning" onclick="editarLibro('${
             libro._id
@@ -154,7 +154,7 @@ async function editarLibro(id) {
     document.getElementById("precio").value = libro.precio;
     document.getElementById("stock").value = libro.stock;
     document.getElementById("estado").value = libro.estado;
-    document.getElementById("proveedor").value = libro.proveedor_id;
+    document.getElementById("proveedor").value = libro.proveedor_nombre;
 
     productoEditandoId = id;
     document.querySelector("#form-libro button[type='submit']").textContent =
@@ -360,6 +360,42 @@ async function guardarCliente(e) {
   }
 }
 
+function calcularTop10() {
+  const topEjemplo = [
+    { titulo: "Harry Potter", autor: "J.K. Rowling", cantidad: 120 },
+    { titulo: "El Nombre del Viento", autor: "Patrick Rothfuss", cantidad: 95 },
+    { titulo: "Cementerio de Animales", autor: "Stephen King", cantidad: 78 },
+    { titulo: "El Imperio Final", autor: "Brandon Sanderson", cantidad: 70 },
+    { titulo: "Orgullo y Prejuicio", autor: "Jane Austen", cantidad: 66 },
+    { titulo: "Lord of the Mysteries", autor: "Cuttlefish TLD", cantidad: 50 },
+    { titulo: "Don Quijote", autor: "Miguel de Cervantes", cantidad: 48 },
+    { titulo: "1984", autor: "George Orwell", cantidad: 42 },
+    {
+      titulo: "Crónica de una muerte anunciada",
+      autor: "García Márquez",
+      cantidad: 38,
+    },
+    { titulo: "La Metamorfosis", autor: "Franz Kafka", cantidad: 33 },
+  ];
+
+  const tbody = document.getElementById("top-productos");
+  tbody.innerHTML = "";
+
+  topEjemplo.forEach((libro, index) => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${libro.titulo}</td>
+      <td>${libro.autor}</td>
+      <td>${libro.cantidad}</td>
+    `;
+    tbody.appendChild(fila);
+  });
+}
+
+//esta es la funcion que dije que te comente bro respecto a la iteracion de los libros, cuando se implemente la opcion de compra y se refleje el stock en la bd, reemplazmos por este codigo
+
+/*
 // 📈 Top 10 productos más vendidos
 function calcularTop10() {
   const pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
@@ -391,4 +427,4 @@ function calcularTop10() {
     item.textContent = `${titulo} — ${cantidad} vendidos`;
     lista.appendChild(item);
   });
-}
+}*/
