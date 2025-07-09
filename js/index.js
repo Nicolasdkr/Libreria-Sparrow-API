@@ -232,7 +232,7 @@ async function realizarCompra(e) {
     nombre,
     nombre_encriptado: btoa(nombre),
     rut,
-    correo: email,
+    email,
     telefono,
     direccion,
     fecha_nacimiento: new Date(fechaNacimiento),

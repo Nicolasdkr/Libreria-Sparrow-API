@@ -188,14 +188,24 @@ async function cargarPedidos() {
 
   try {
     const res = await fetch("http://localhost:5000/api/pedidos");
-    pedidos = await res.json();
+    const todosLosPedidos = await res.json();
 
-    pedidos.forEach((pedido) => {
+    const filtro = document.getElementById("filtro-estado").value;
+    const pedidosFiltrados =
+      filtro === "todos"
+        ? todosLosPedidos
+        : todosLosPedidos.filter((p) => p.estado_envio === filtro);
+
+    document.getElementById(
+      "contador-pedidos"
+    ).textContent = `📦 Mostrando ${pedidosFiltrados.length} de ${todosLosPedidos.length} pedidos registrados`;
+
+    pedidosFiltrados.forEach((pedido) => {
       const fila = document.createElement("tr");
       fila.innerHTML = `
-        <td>${pedido.nombre || pedido.cliente || "Cliente"}</td>
+        <td>${pedido.nombre || "Cliente"}</td>
         <td>${pedido.productos[0]?.titulo || "-"}</td>
-        <td>${pedido.productos[0]?.cantidad || 1}</td>
+        <td>${pedido.productos[0]?.cantidad || "-"}</td>
         <td>$${pedido.total_final?.toLocaleString() || "0"}</td>
         <td>
           <select onchange="actualizarEstadoPedido('${
@@ -360,71 +370,32 @@ async function guardarCliente(e) {
   }
 }
 
-function calcularTop10() {
-  const topEjemplo = [
-    { titulo: "Harry Potter", autor: "J.K. Rowling", cantidad: 120 },
-    { titulo: "El Nombre del Viento", autor: "Patrick Rothfuss", cantidad: 95 },
-    { titulo: "Cementerio de Animales", autor: "Stephen King", cantidad: 78 },
-    { titulo: "El Imperio Final", autor: "Brandon Sanderson", cantidad: 70 },
-    { titulo: "Orgullo y Prejuicio", autor: "Jane Austen", cantidad: 66 },
-    { titulo: "Lord of the Mysteries", autor: "Cuttlefish TLD", cantidad: 50 },
-    { titulo: "Don Quijote", autor: "Miguel de Cervantes", cantidad: 48 },
-    { titulo: "1984", autor: "George Orwell", cantidad: 42 },
-    {
-      titulo: "Crónica de una muerte anunciada",
-      autor: "García Márquez",
-      cantidad: 38,
-    },
-    { titulo: "La Metamorfosis", autor: "Franz Kafka", cantidad: 33 },
-  ];
-
-  const tbody = document.getElementById("top-productos");
-  tbody.innerHTML = "";
-
-  topEjemplo.forEach((libro, index) => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${libro.titulo}</td>
-      <td>${libro.autor}</td>
-      <td>${libro.cantidad}</td>
-    `;
-    tbody.appendChild(fila);
-  });
-}
-
-//esta es la funcion que dije que te comente bro respecto a la iteracion de los libros, cuando se implemente la opcion de compra y se refleje el stock en la bd, reemplazmos por este codigo
-
-/*
 // 📈 Top 10 productos más vendidos
-function calcularTop10() {
-  const pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-  const conteo = {};
+async function calcularTop10() {
+  try {
+    const res = await fetch("http://localhost:5000/api/pedidos/estadisticas");
+    const stats = await res.json();
+    const top = stats.top_10 || [];
 
-  pedidos.forEach((pedido) => {
-    pedido.productos.forEach((prod) => {
-      if (!conteo[prod.titulo]) {
-        conteo[prod.titulo] = 0;
-      }
-      conteo[prod.titulo] += prod.cantidad;
+    const lista = document.getElementById("top-productos");
+    lista.innerHTML = "";
+
+    if (top.length === 0) {
+      lista.innerHTML =
+        "<li class='list-group-item text-muted'>No hay datos disponibles.</li>";
+      return;
+    }
+
+    top.forEach(({ titulo, cantidad }, index) => {
+      const item = document.createElement("li");
+      item.className =
+        "list-group-item bg-dark text-white d-flex justify-content-between";
+      item.innerHTML = `<span>#${
+        index + 1
+      } — ${titulo}</span><span>${cantidad} vendidos</span>`;
+      lista.appendChild(item);
     });
-  });
-
-  const top = Object.entries(conteo)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
-
-  const lista = document.getElementById("top-productos");
-  lista.innerHTML = "";
-
-  if (top.length === 0) {
-    lista.innerHTML = "<li class='text-muted'>No hay datos disponibles.</li>";
-    return;
+  } catch (error) {
+    console.error("Error al calcular el top 10:", error);
   }
-
-  top.forEach(([titulo, cantidad]) => {
-    const item = document.createElement("li");
-    item.textContent = `${titulo} — ${cantidad} vendidos`;
-    lista.appendChild(item);
-  });
-}*/
+}
