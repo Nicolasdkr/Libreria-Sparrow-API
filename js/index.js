@@ -82,15 +82,8 @@ function mostrarDetallesLibro() {
   document.getElementById(
     "detalle-precio"
   ).textContent = `$${libro.precio.toLocaleString()}`;
-  document.getElementById(
-    "detalle-stock"
-  ).textContent = `Stock: ${libro.stock}`;
-  document.getElementById(
-    "detalle-estado"
-  ).textContent = `Estado: ${libro.estado}`;
-  document.getElementById("detalle-proveedor").textContent = `Proveedor: ${
-    libro.proveedor_id || "N/A"
-  }`;
+  document.getElementById("detalle-stock").textContent = `${libro.stock}`;
+  document.getElementById("detalle-estado").textContent = `${libro.estado}`;
   document.getElementById("detalle-imagen").src =
     libro.imagen || "img/placeholder.jpg";
 
@@ -300,8 +293,21 @@ async function realizarCompra(e) {
     const dataPedido = await resPedido.json();
     console.log("Pedido guardado correctamente:", dataPedido);
 
-    // ✅ Se elimina mostrarResumen(pedido);
+    //Mostrar mensaje de confirmación con animación
+    const mensaje = document.getElementById("mensaje-confirmacion");
+    mensaje.classList.add("show");
+    mensaje.style.display = "block";
 
+    //Scroll automático
+    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    // Ocultar mensaje después de unos segundos
+    setTimeout(() => {
+      mensaje.classList.remove("show");
+      mensaje.style.display = "none";
+    }, 6000);
+
+    // ✅ Se elimina mostrarResumen(pedido);
     document.getElementById("form-compra").reset();
     document.getElementById("detalles-libro").style.display = "none";
     actualizarPrecioTotal();
